@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>足跡隨筆 | 個人實用旅遊筆記 & 作品集</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Noto Serif TC for elegant minimalist editorial look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Subtle Minimalist Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f9fafb',
+                            100: '#f3f4f6',
+                            800: '#1f2937',
+                            900: '#111827',
+                            accent: '#64748b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        serif: ['Noto Serif TC', 'Georgia', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Image Watermark Overlay Styling */
+        .watermark-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            overflow: hidden;
+        }
+        .watermark-container::after {
+            content: "© 足跡隨筆 / 版權所有 未經授權請勿轉載";
+            position: absolute;
+            bottom: 12px;
+            right: 16px;
+            background: rgba(0, 0, 0, 0.45);
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.72rem;
+            letter-spacing: 0.05em;
+            padding: 3px 10px;
+            border-radius: 4px;
+            pointer-events: none;
+            backdrop-filter: blur(2px);
+        }
+        /* Hide scrollbars for clean aesthetic while keeping functional scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen flex flex-col selection:bg-gray-200 selection:text-gray-900">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 transition-all duration-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                
+                <!-- Site Logo / Branding -->
+                <div class="flex items-center space-x-3">
+                    <button onclick="navigateTo('home')" class="text-left group">
+                        <span class="font-serif text-xl sm:text-2xl tracking-wider font-semibold text-gray-900 group-hover:text-gray-600 transition-colors">足跡隨筆</span>
+                        <span class="hidden sm:inline-block text-xs text-gray-400 font-light ml-2 border-l border-gray-200 pl-2">Travel Notes & Portfolio</span>
+                    </button>
+                </div>
+
+                <!-- Desktop Navigation Menu -->
+                <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-600">
+                    <button onclick="navigateTo('home')" class="hover:text-gray-900 transition-colors py-2">首頁</button>
+                    
+                    <!-- Regional Geographic Dropdown -->
+                    <div class="relative group py-2">
+                        <button class="hover:text-gray-900 transition-colors inline-flex items-center space-x-1">
+                            <span>區域索引</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-gray-400 group-hover:rotate-180 transition-transform"></i>
+                        </button>
+                        <div class="absolute left-0 mt-2 w-56 rounded-lg bg-white shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2 z-50">
+                            <div class="px-3 py-1 text-[11px] font-semibold text-gray-400 tracking-wider">亞洲 ASIA</div>
+                            <button onclick="filterByGeo('日本')" class="w-full text-left px-4 py-1.5 text-xs text-gray-700 hover:bg-gray-50 hover:text-gray-900 flex justify-between">
+                                <span>日本 (Japan)</span>
+                                <span class="text-gray-400">東京 / 京都</span>
+                            </button>
+                            <button onclick="filterByGeo('泰國')" class="w-full text-left px-4 py-1.5 text-xs text-gray-700 hover:bg-gray-50 hover:text-gray-900 flex justify-between">
+                                <span>泰國 (Thailand)</span>
+                                <span class="text-gray-400">曼谷</span>
+                            </button>
+                            <div class="border-t border-gray-100 my-1"></div>
+                            <div class="px-3 py-1 text-[11px] font-semibold text-gray-400 tracking-wider">歐洲 EUROPE</div>
+                            <button onclick="filterByGeo('法國')" class="w-full text-left px-4 py-1.5 text-xs text-gray-700 hover:bg-gray-50 hover:text-gray-900 flex justify-between">
+                                <span>法國 (France)</span>
+                                <span class="text-gray-400">巴黎</span>
+                            </button>
+                            <button onclick="filterByGeo('冰島')" class="w-full text-left px-4 py-1.5 text-xs text-gray-700 hover:bg-gray-50 hover:text-gray-900 flex justify-between">
+                                <span>冰島 (Iceland)</span>
+                                <span class="text-gray-400">雷克雅維克</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button onclick="openModal('about-modal')" class="hover:text-gray-900 transition-colors py-2">個人簡介 & 履歷</button>
+                </nav>
+
+                <!-- Header Actions: Search Trigger & Mobile Menu Icon -->
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <input type="text" id="searchInput" oninput="handleSearch()" placeholder="搜尋景點、城市、關鍵字..." 
+                            class="w-36 sm:w-56 bg-gray-100/80 hover:bg-gray-100 focus:bg-white text-xs text-gray-800 rounded-full pl-8 pr-4 py-2 border border-transparent focus:border-gray-300 focus:outline-none transition-all">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-gray-400"></i>
+                    </div>
+
+                    <!-- Mobile Menu Toggle Button -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-gray-600 hover:text-gray-900 focus:outline-none">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Panel -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-b border-gray-100 px-4 pt-2 pb-4 space-y-2 text-sm">
+            <button onclick="navigateTo('home'); toggleMobileMenu()" class="block w-full text-left py-2 border-b border-gray-50 text-gray-700">首頁</button>
+            <div class="py-2 border-b border-gray-50">
+                <div class="text-xs text-gray-400 font-semibold mb-1">區域快選</div>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <button onclick="filterByGeo('日本'); toggleMobileMenu()" class="text-left py-1 text-gray-600">🇯🇵 日本 (東京/京都)</button>
+                    <button onclick="filterByGeo('泰國'); toggleMobileMenu()" class="text-left py-1 text-gray-600">🇹🇭 泰國 (曼谷)</button>
+                    <button onclick="filterByGeo('法國'); toggleMobileMenu()" class="text-left py-1 text-gray-600">🇫🇷 法國 (巴黎)</button>
+                    <button onclick="filterByGeo('冰島'); toggleMobileMenu()" class="text-left py-1 text-gray-600">🇮🇸 冰島 (雷克雅維克)</button>
+                </div>
+            </div>
+            <button onclick="openModal('about-modal'); toggleMobileMenu()" class="block w-full text-left py-2 text-gray-700">關於我 & 旅遊履歷</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- WELCOME HERO SECTION -->
+        <section class="mb-10 text-center sm:text-left bg-white rounded-2xl p-6 sm:p-8 border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="space-y-2 max-w-2xl">
+                <div class="inline-flex items-center space-x-2 text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span>實用導向旅遊觀察筆記</span>
+                </div>
+                <h1 class="font-serif text-2xl sm:text-3xl text-gray-900 font-semibold tracking-wide">記錄世界足跡，整理精準濃縮旅情</h1>
+                <p class="text-xs sm:text-sm text-gray-500 leading-relaxed">
+                    不追求華麗誇飾，僅以簡潔優雅的視覺，留存各地的實用交通資訊、營業細節與真實走訪心得。每次旅程歸來後更新。
+                </p>
+            </div>
+            <!-- Quick Stats Badge Bar -->
+            <div class="flex items-center space-x-4 sm:space-x-6 bg-gray-50 px-5 py-3.5 rounded-xl border border-gray-100 text-center">
+                <div>
+                    <div class="text-lg font-semibold text-gray-900 font-serif">18</div>
+                    <div class="text-[11px] text-gray-400">造訪國家</div>
+                </div>
+                <div class="h-6 w-px bg-gray-200"></div>
+                <div>
+                    <div class="text-lg font-semibold text-gray-900 font-serif">42</div>
+                    <div class="text-[11px] text-gray-400">探索城市</div>
+                </div>
+                <div class="h-6 w-px bg-gray-200"></div>
+                <div>
+                    <div class="text-lg font-semibold text-gray-900 font-serif">120k+</div>
+                    <div class="text-[11px] text-gray-400">累積哩程 (km)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTENT LAYOUT GRID (Sidebar + Main View) -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            
+            <!-- LEFT SIDEBAR: Geographic Tree & Filters -->
+            <aside class="lg:col-span-1 space-y-6">
+                <!-- Search Feedback Status (Hidden by default) -->
+                <div id="searchStatus" class="hidden bg-gray-100 p-3 rounded-xl text-xs text-gray-600 flex justify-between items-center">
+                    <span>搜尋結果: <strong id="searchKeyword"></strong></span>
+                    <button onclick="clearSearch()" class="text-gray-400 hover:text-gray-700"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <!-- Geographic Navigation Tree Widget -->
+                <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+                    <div class="flex items-center justify-between mb-4 pb-2 border-b border-gray-100">
+                        <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot text-gray-400"></i> 地理分類目錄
+                        </h3>
+                        <button onclick="filterByGeo('all')" class="text-[11px] text-gray-400 hover:text-gray-700">顯示全部</button>
+                    </div>
+
+                    <!-- Region Tree -->
+                    <div class="space-y-3 text-xs">
+                        <!-- Asia -->
+                        <div>
+                            <div class="font-medium text-gray-800 mb-1 flex items-center justify-between">
+                                <span>亞洲 Asia</span>
+                                <span class="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">2 國</span>
+                            </div>
+                            <ul class="pl-3 border-l border-gray-100 space-y-1.5 text-gray-600">
+                                <li>
+                                    <button onclick="filterByGeo('日本')" class="hover:text-gray-900 w-full text-left flex justify-between py-0.5">
+                                        <span>🇯🇵 日本</span>
+                                        <span class="text-gray-300">2 篇</span>
+                                    </button>
+                                    <div class="pl-3 space-y-1 text-gray-400 mt-1">
+                                        <button onclick="filterByGeo('東京')" class="block hover:text-gray-700 text-[11px]">• 東京 (Tokyo)</button>
+                                        <button onclick="filterByGeo('京都')" class="block hover:text-gray-700 text-[11px]">• 京都 (Kyoto)</button>
+                                    </div>
+                                </li>
+                                <li class="pt-1">
+                                    <button onclick="filterByGeo('泰國')" class="hover:text-gray-900 w-full text-left flex justify-between py-0.5">
+                                        <span>🇹🇭 泰國</span>
+                                        <span class="text-gray-300">1 篇</span>
+                                    </button>
+                                    <div class="pl-3 text-gray-400 mt-1">
+                                        <button onclick="filterByGeo('曼谷')" class="block hover:text-gray-700 text-[11px]">• 曼谷 (Bangkok)</button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Europe -->
+                        <div class="pt-2 border-t border-gray-50">
+                            <div class="font-medium text-gray-800 mb-1 flex items-center justify-between">
+                                <span>歐洲 Europe</span>
+                                <span class="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">2 國</span>
+                            </div>
+                            <ul class="pl-3 border-l border-gray-100 space-y-1.5 text-gray-600">
+                                <li>
+                                    <button onclick="filterByGeo('冰島')" class="hover:text-gray-900 w-full text-left flex justify-between py-0.5">
+                                        <span>🇮🇸 冰島</span>
+                                        <span class="text-gray-300">1 篇</span>
+                                    </button>
+                                    <div class="pl-3 text-gray-400 mt-1">
+                                        <button onclick="filterByGeo('雷克雅維克')" class="block hover:text-gray-700 text-[11px]">• 雷克雅維克</button>
+                                    </div>
+                                </li>
+                                <li class="pt-1">
+                                    <button onclick="filterByGeo('法國')" class="hover:text-gray-900 w-full text-left flex justify-between py-0.5">
+                                        <span>🇫🇷 法國</span>
+                                        <span class="text-gray-300">1 篇</span>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal Photography Note Badge -->
+                <div class="bg-gray-100/70 rounded-2xl p-4 text-xs text-gray-500 leading-relaxed border border-gray-200/50">
+                    <div class="font-medium text-gray-700 mb-1 flex items-center gap-1.5">
+                        <i class="fa-solid fa-camera text-gray-400"></i> 影像使用聲明
+                    </div>
+                    本站所有相片均由作者實地拍攝，並標記有輕量水印。版權所有，若需要高畫質原檔授權請點擊「關於我」連繫。
+                </div>
+            </aside>
+
+            <!-- RIGHT MAIN CONTENT AREA -->
+            <section class="lg:col-span-3">
+
+                <!-- VIEW 1: POST LIST / CATALOG (Default) -->
+                <div id="catalogView" class="space-y-6">
+                    <div class="flex items-center justify-between pb-3 border-b border-gray-200">
+                        <h2 class="text-sm font-semibold text-gray-500 tracking-wider uppercase" id="catalogTitle">最新旅遊筆記 (Latest Log)</h2>
+                        <span class="text-xs text-gray-400" id="articleCount">共 4 篇筆記</span>
+                    </div>
+
+                    <!-- Post Grid -->
+                    <div id="postsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <!-- Post Card 1: Shibuya Sky -->
+                        <article class="post-card bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col"
+                                 data-title="SHIBUYA SKY 展望台" data-continent="亞洲" data-country="日本" data-city="東京" data-tags="夜景,觀景台,現代建築">
+                            <div class="watermark-container h-48 bg-gray-200 relative overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=800&q=80" 
+                                     alt="SHIBUYA SKY" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy">
+                            </div>
+                            <div class="p-5 flex-grow flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center space-x-2 text-[11px] text-gray-400 mb-2">
+                                        <span>亞洲 > 日本 > 東京</span>
+                                        <span>•</span>
+                                        <time>2026-10-15</time>
+                                    </div>
+                                    <h3 class="font-serif text-lg font-semibold text-gray-900 mb-2 hover:text-gray-600 cursor-pointer" onclick="openArticle('article-shibuya')">
+                                        【東京】SHIBUYA SKY 展望台：360度俯瞰東京夜景與預約攻略
+                                    </h3>
+                                    <p class="text-xs text-gray-500 line-clamp-2 mb-4 leading-relaxed">
+                                        位於澀谷 Scramble Square 頂樓的絕景觀景台。整理最佳落日入場時間、現場動線安排與高空避風建議。
+                                    </p>
+                                </div>
+                                <div class="pt-3 border-t border-gray-50 flex items-center justify-between">
+                                    <div class="flex gap-1">
+                                        <span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded">#夜景</span>
+                                        <span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded">#展望台</span>
+                                    </div>
+                                    <button onclick="openArticle('article-shibuya')" class="text-xs font-medium text-gray-800 hover:text-gray-500 flex items-center gap-1">
+                                        閱讀筆記 <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Post Card 2: Kyoto Arashiyama -->
+                        <article class="post-card bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col"
+                                 data-title="嵐山竹林小徑與祐齋亭" data-continent="亞洲" data-country="日本" data-city="京都" data-tags="古蹟,自然,竹林">
+                            <div class="watermark-container h-48 bg-gray-200 relative overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80" 
+                                     alt="京都嵐山" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy">
+                            </div>
+                            <div class="p-5 flex-grow flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center space-x-2 text-[11px] text-gray-400 mb-2">
+                                        <span>亞洲 > 日本 > 京都</span>
+                                        <span>•</span>
+                                        <time>2026-09-28</time>
+                                    </div>
+                                    <h3 class="font-serif text-lg font-semibold text-gray-900 mb-2 hover:text-gray-600 cursor-pointer" onclick="openArticle('article-kyoto')">
+                                        【京都】清晨嵐山竹林散策與祐齋亭水鏡光影記錄
+                                    </h3>
+                                    <p class="text-xs text-gray-500 line-clamp-2 mb-4 leading-relaxed">
+                                        避開人潮的清晨 7:00 散策路線。包含嵐電交通切換、祐齋亭預約流程與鏡面反射攝影細節。
+                                    </p>
+                                </div>
+                                <div class="pt-3 border-t border-gray-50 flex items-center justify-between">
+                                    <div class="flex gap-1">
+                                        <span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded">#靜謐散策</span>
+                                        <span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded">#古都風情</span>
+                                    </div>
+                                    <button onclick="openArticle('article-kyoto')" class="text-xs font-medium text-gray-800 hover:text-gray-500 flex items-center gap-1">
+                                        閱讀筆記 <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Post Card 3: Bangkok Cafe & Canal -->
+                        <article class="post-card bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col"
+                                 data-title="曼谷運河文化與特色咖啡館" data-continent="亞洲" data-country="泰國" data-city="曼谷" data-tags="咖啡,運河,文化">
+                            <div class="watermark-container h-48 bg-gray-200 relative overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=800&q=80" 
+                                     alt="曼谷街景" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy">
+                            </div>
+                            <div class="p-5 flex-grow flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center space-x-2 text-[11px] text-gray-400 mb-2">
+                                        <span>亞洲 > 泰國 > 曼谷</span>
+                                        <span>•</span>
+                                        <time>2026-08-12</time>
+                                    </div>
+                                    <h3 class="font-serif text-lg font-semibold text-gray-900 mb-2 hover:text-gray-600 cursor-pointer" onclick="openArticle('article-bangkok')">
+                                        【曼谷】舊城區運河快艇與嵩越路 (Song Wat) 獨立咖啡筆記
+                                    </h3>
+                                    <p class="text-xs text-gray-500 line-clamp-2 mb-4 leading-relaxed">
+                                        遠離商場的曼谷深度路線。紀錄昭披耶河快艇船票購買、嵩越路百年老屋改造咖啡館實測。
+                                    </p>
+                                </div>
+                                <div class="pt-3 border-t border-gray-50 flex items-center justify-between">
+                                    <div class="flex gap-1">
+                                        <span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded">#老街探店</span>
+                                        <span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded">#水上交通</span>
+                                    </div>
+                                    <button onclick="openArticle('article-bangkok')" class="text-xs font-medium text-gray-800 hover:text-gray-500 flex items-center gap-1">
+                                        閱讀筆記 <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Post Card 4: Iceland Vik -->
+                        <article class="post-card bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col"
+                                 data-title="冰島南岸黑沙灘與維克小鎮" data-continent="歐洲" data-country="冰島" data-city="雷克雅維克" data-tags="自然,自駕,地貌">
+                            <div class="watermark-container h-48 bg-gray-200 relative overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1504893524553-b855bce32c67?auto=format&fit=crop&w=800&q=80" 
+                                     alt="冰島風光" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy">
+                            </div>
+                            <div class="p-5 flex-grow flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center space-x-2 text-[11px] text-gray-400 mb-2">
+                                        <span>歐洲 > 冰島 > 雷克雅維克</span>
+                                        <span>•</span>
+                                        <time>2026-05-19</time>
+                                    </div>
+                                    <h3 class="font-serif text-lg font-semibold text-gray-900 mb-2 hover:text-gray-600 cursor-pointer" onclick="openArticle('article-iceland')">
+                                        【冰島】一號環島公路：黑沙灘 (Reynisfjara) 風浪注意事項與自駕日誌
+                                    </h3>
+                                    <p class="text-xs text-gray-500 line-clamp-2 mb-4 leading-relaxed">
+                                        玄武岩岩柱與強烈瘋狗浪的安全觀察提醒。包含周邊加油站補給、路況即時監測工具推薦。
+                                    </p>
+                                </div>
+                                <div class="pt-3 border-t border-gray-50 flex items-center justify-between">
+                                    <div class="flex gap-1">
+                                        <span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded">#公路自駕</span>
+                                        <span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded">#極地地貌</span>
+                                    </div>
+                                    <button onclick="openArticle('article-iceland')" class="text-xs font-medium text-gray-800 hover:text-gray-500 flex items-center gap-1">
+                                        閱讀筆記 <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+
+                    </div>
+
+                    <!-- No Results Fallback Notice -->
+                    <div id="noResults" class="hidden bg-white rounded-2xl p-12 text-center border border-gray-100">
+                        <i class="fa-solid fa-compass text-3xl text-gray-300 mb-3"></i>
+                        <h3 class="text-sm font-semibold text-gray-700">未找到符合條件的旅遊筆記</h3>
+                        <p class="text-xs text-gray-400 mt-1">請嘗試更換關鍵字或點擊側邊欄選擇其他區域。</p>
+                        <button onclick="clearSearch()" class="mt-4 text-xs bg-gray-900 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors">重置搜尋條件</button>
+                    </div>
+                </div>
+
+                <!-- VIEW 2: FULL SINGLE ARTICLE VIEW (Default Hidden) -->
+                <div id="articleView" class="hidden space-y-8 bg-white rounded-2xl p-6 sm:p-10 border border-gray-100 shadow-sm">
+                    
+                    <!-- Back Button & Breadcrumbs -->
+                    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-4">
+                        <button onclick="showCatalog()" class="inline-flex items-center gap-2 text-xs font-medium text-gray-600 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 px-3 py-1.5 rounded-full transition-colors">
+                            <i class="fa-solid fa-chevron-left text-[10px]"></i> 返回文章列表
+                        </button>
+                        <div class="text-xs text-gray-400" id="articleCategoryBreadcrumb">
+                            亞洲 > 日本 > 東京
+                        </div>
+                    </div>
+
+                    <!-- Article Header Info -->
+                    <header class="space-y-3">
+                        <div class="flex items-center space-x-3 text-xs text-gray-400">
+                            <span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-[11px] font-medium" id="articleCountryTag">日本 Japan</span>
+                            <time id="articleDate">發布日期：2026-10-15</time>
+                            <span>•</span>
+                            <span>閱讀時間約 4 分鐘</span>
+                        </div>
+                        <h1 class="font-serif text-2xl sm:text-3xl text-gray-900 font-semibold leading-tight" id="articleMainTitle">
+                            【東京】SHIBUYA SKY 展望台：360度俯瞰東京夜景與預約攻略
+                        </h1>
+                    </header>
+
+                    <!-- Featured Image with Watermark -->
+                    <div class="watermark-container rounded-xl overflow-hidden bg-gray-100">
+                        <img id="articleImage" src="https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=1200&q=80" 
+                             alt="SHIBUYA SKY" class="w-full h-[360px] sm:h-[450px] object-cover">
+                    </div>
+
+                    <!-- Practical Info Card (實用資訊卡) -->
+                    <div class="bg-gray-50 rounded-xl p-5 border border-gray-200/70 space-y-3">
+                        <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+                            <h3 class="text-xs font-semibold text-gray-800 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-circle-info text-gray-500"></i> 實用資訊卡 (Practical Info)
+                            </h3>
+                            <span class="text-xs text-amber-600 font-medium flex items-center gap-1">
+                                ★★★★★ <span class="text-gray-400 text-[11px]">(5/5 推薦)</span>
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-gray-600">
+                            <div><strong class="text-gray-800">景點地址：</strong> 東京都澀谷區澀谷二丁目24-12 (Shibuya Scramble Square 14F/45F/46F/屋頂)</div>
+                            <div><strong class="text-gray-800">營業時間：</strong> 10:00 - 22:30 (最後入場時間 21:20)</div>
+                            <div><strong class="text-gray-800">交通指南：</strong> 各線「澀谷站」直通 B6 出口乘電梯至 14 樓</div>
+                            <div><strong class="text-gray-800">門票建議：</strong> 線上預約約 2,200 日圓，現場購票約 2,500 日圓 (熱門時段需提前2週預約)</div>
+                        </div>
+                    </div>
+
+                    <!-- Lightweight Embedded Short Video Preview Section -->
+                    <div class="space-y-2">
+                        <div class="text-xs font-semibold text-gray-500 flex items-center gap-2">
+                            <i class="fa-solid fa-video text-gray-400"></i> 現場氛圍輕量影音記錄 (Short Video Preview)
+                        </div>
+                        <div class="aspect-video bg-gray-900 rounded-xl overflow-hidden relative flex items-center justify-center group">
+                            <!-- Simulated clean video container -->
+                            <img src="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1000&q=80" class="w-full h-full object-cover opacity-60">
+                            <div class="absolute inset-0 bg-black/30 flex flex-col items-center justify-center text-white p-4 text-center">
+                                <button onclick="alert('提示：為保持極速載入，此處嵌入靜態輕量短影片。點擊可撥放 10 秒現場風聲與高空視角。')" class="w-12 h-12 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md flex items-center justify-center transition-transform transform group-hover:scale-110 mb-2">
+                                    <i class="fa-solid fa-play text-white ml-1"></i>
+                                </button>
+                                <span class="text-xs font-light">點擊預覽高空現場動態 (0:15)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Markdown Style Article Body Content -->
+                    <div class="prose prose-slate max-w-none text-xs sm:text-sm text-gray-700 leading-relaxed space-y-4 font-sans">
+                        <h2 class="font-serif text-lg font-semibold text-gray-900 border-b border-gray-100 pb-2 pt-2">
+                            一、最佳前往時段與預約訣竅
+                        </h2>
+                        <p>
+                            SHIBUYA SKY 目前是澀谷最受歡迎的高空展望台，若想同時捕捉到「日落前的東京市景」、「夕陽餘暉」以及「百萬夜景」，建議預約**日落前 45 分鐘**的場次。例如秋季日落時間約為 17:00，則預約 16:00 - 16:20 入場為最佳。
+                        </p>
+                        
+                        <h2 class="font-serif text-lg font-semibold text-gray-900 border-b border-gray-100 pb-2 pt-2">
+                            二、寄物規矩與隨身物品限制（極重要）
+                        </h2>
+                        <p>
+                            為了防止物品自高空墜落發生危險，屋頂露天平台（SKY STAGE）對於隨身物品管制極為嚴格：
+                        </p>
+                        <ul class="list-disc pl-5 space-y-1 text-gray-600">
+                            <li><strong>禁止攜帶：</strong> 背包、手提袋、帽子、圍巾、腳架、自拍棒、長傘。</li>
+                            <li><strong>允許攜帶：</strong> 帶有脖掛繩的相機/手機、口袋內的皮夾。</li>
+                            <li>所有不可攜帶物品均需置於 14 樓或 46 樓的投幣式寄物櫃（每次 100 日圓，退櫃時會退還）。</li>
+                        </ul>
+
+                        <h2 class="font-serif text-lg font-semibold text-gray-900 border-b border-gray-100 pb-2 pt-2">
+                            三、個人實測避坑心得
+                        </h2>
+                        <p>
+                            頂樓風勢相當強勁，即使是夏季夜晚也略有涼意，建議攜帶一件薄風衣。若遇到強風或大雨，頂樓露天平台會暫時關閉，屆時只能在 46 樓的室內玻璃展望層觀賞，雖然視野依舊良好，但少了無遮蔽的震撼感。
+                        </p>
+                    </div>
+
+                    <!-- Chronological Navigation (時間軸導覽: 上一篇 / 下一篇) -->
+                    <div class="border-t border-gray-100 pt-6 mt-8">
+                        <div class="text-xs text-gray-400 mb-3 font-medium">時間軸導覽 (Chronological Navigation)</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <button onclick="openArticle('article-kyoto')" class="text-left p-3.5 rounded-xl border border-gray-100 hover:border-gray-200 hover:bg-gray-50 transition-all group">
+                                <div class="text-[11px] text-gray-400 flex items-center gap-1 mb-1">
+                                    <i class="fa-solid fa-arrow-left"></i> 上一篇 (Previous)
+                                </div>
+                                <div class="text-xs font-semibold text-gray-800 group-hover:text-gray-600 truncate">
+                                    【京都】清晨嵐山竹林散策與祐齋亭水鏡光影記錄
+                                </div>
+                            </button>
+                            <button onclick="openArticle('article-bangkok')" class="text-right p-3.5 rounded-xl border border-gray-100 hover:border-gray-200 hover:bg-gray-50 transition-all group">
+                                <div class="text-[11px] text-gray-400 flex items-center justify-end gap-1 mb-1">
+                                    下一篇 (Next) <i class="fa-solid fa-arrow-right"></i>
+                                </div>
+                                <div class="text-xs font-semibold text-gray-800 group-hover:text-gray-600 truncate">
+                                    【曼谷】舊城區運河快艇與嵩越路獨立咖啡筆记
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+        </div>
+
+    </main>
+
+    <!-- ABOUT ME & PORTFOLIO MODAL -->
+    <div id="about-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-xl border border-gray-100 relative max-h-[90vh] overflow-y-auto">
+            
+            <!-- Close Modal Button -->
+            <button onclick="closeModal('about-modal')" class="absolute top-5 right-5 text-gray-400 hover:text-gray-700">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Modal Header -->
+            <div class="flex items-center space-x-4">
+                <div class="w-14 h-14 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Author" class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <h2 class="font-serif text-xl font-semibold text-gray-900">關於作者 | 旅人日誌</h2>
+                    <p class="text-xs text-gray-500 mt-0.5">獨立攝影筆記寫作者 • 紀錄全球都市與自然地貌</p>
+                </div>
+            </div>
+
+            <!-- Travel Statistics Counter Grid -->
+            <div class="space-y-2">
+                <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider">旅行履歷統計 (Stats)</div>
+                <div class="grid grid-cols-3 gap-3 bg-gray-50 p-4 rounded-xl text-center border border-gray-100">
+                    <div>
+                        <div class="text-xl font-serif font-semibold text-gray-800">18</div>
+                        <div class="text-[11px] text-gray-500">造訪國家</div>
+                    </div>
+                    <div>
+                        <div class="text-xl font-serif font-semibold text-gray-800">42</div>
+                        <div class="text-[11px] text-gray-500">探索城市</div>
+                    </div>
+                    <div>
+                        <div class="text-xl font-serif font-semibold text-gray-800">120,000+</div>
+                        <div class="text-[11px] text-gray-500">飛行哩程 (km)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Travel Philosophy -->
+            <div class="space-y-2 text-xs text-gray-600 leading-relaxed">
+                <div class="font-semibold text-gray-800">紀錄理念 (Philosophy)</div>
+                <p>
+                    「旅行不是為了逃避生活，而是為了重新理解世界。」
+                    本站建立之初衷，在於以結構化、實用導向的文字與極簡畫面，紀錄每次旅程中最真實的交通接駁、時間控制與注意事項。希望這些筆記能幫助到同樣喜愛獨立探索的旅人。
+                </p>
+            </div>
+
+            <!-- Equipment List -->
+            <div class="space-y-2 text-xs text-gray-600">
+                <div class="font-semibold text-gray-800">隨行裝備 (Equipment)</div>
+                <ul class="bg-gray-50 p-3.5 rounded-xl border border-gray-100 space-y-1 text-gray-500">
+                    <li>• <strong>相機機身：</strong> Sony A7CII (輕量化全片幅首選)</li>
+                    <li>• <strong>隨行鏡頭：</strong> FE 24-50mm F2.8 G / FE 85mm F1.8</li>
+                    <li>• <strong>後製工具：</strong> Adobe Lightroom Classic / DaVinci Resolve</li>
+                </ul>
+            </div>
+
+            <!-- Contact & Social Footer -->
+            <div class="pt-4 border-t border-gray-100 flex justify-end">
+                <button onclick="closeModal('about-modal')" class="bg-gray-900 text-white text-xs px-5 py-2 rounded-full hover:bg-gray-700 transition-colors">
+                    關閉視窗
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-gray-200 mt-16 text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                
+                <!-- Footer Col 1: About Site -->
+                <div class="space-y-2">
+                    <div class="font-serif text-base font-semibold text-gray-900">足跡隨筆</div>
+                    <p class="text-gray-400 leading-relaxed">
+                        個人純靜態實用旅遊筆記與影像作品集。專注於純粹閱讀、輕量載入與真實體驗紀錄。
+                    </p>
+                </div>
+
+                <!-- Footer Col 2: Site Map / Regional Index -->
+                <div>
+                    <div class="font-semibold text-gray-800 mb-2">區域地圖 (Site Index)</div>
+                    <div class="grid grid-cols-2 gap-1 text-gray-500">
+                        <button onclick="filterByGeo('日本')" class="text-left hover:text-gray-900">🇯🇵 日本 (Japan)</button>
+                        <button onclick="filterByGeo('泰國')" class="text-left hover:text-gray-900">🇹🇭 泰國 (Thailand)</button>
+                        <button onclick="filterByGeo('冰島')" class="text-left hover:text-gray-900">🇮🇸 冰島 (Iceland)</button>
+                        <button onclick="filterByGeo('法國')" class="text-left hover:text-gray-900">🇫🇷 法國 (France)</button>
+                    </div>
+                </div>
+
+                <!-- Footer Col 3: Copyright & Watermark Notice -->
+                <div class="space-y-2">
+                    <div class="font-semibold text-gray-800">版權與聲明</div>
+                    <p class="text-gray-400">
+                        © 2026 足跡隨筆 (Travel Log). All Rights Reserved.<br>
+                        本站影像均帶有專屬水印，未經書面許可請勿任意轉載或商業使用。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Bottom Bar with Smooth Back-to-Top Button -->
+            <div class="pt-6 border-t border-gray-100 flex items-center justify-between">
+                <span>純靜態網站建置 • 輕量化優先</span>
+                <button onclick="scrollToTop()" class="inline-flex items-center gap-1.5 text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition-colors">
+                    <span>返回頂部</span>
+                    <i class="fa-solid fa-arrow-up text-[10px]"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE JAVASCRIPT LOGIC (Client-Side Only) -->
+    <script>
+        // Article Database for simulated dynamic rendering
+        const articlesData = {
+            'article-shibuya': {
+                title: "【東京】SHIBUYA SKY 展望台：360度俯瞰東京夜景與預約攻略",
+                country: "日本",
+                breadcrumb: "亞洲 > 日本 > 東京",
+                date: "發布日期：2026-10-15",
+                image: "https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=1200&q=80",
+                prev: "article-kyoto",
+                next: "article-bangkok"
+            },
+            'article-kyoto': {
+                title: "【京都】清晨嵐山竹林散策與祐齋亭水鏡光影記錄",
+                country: "日本",
+                breadcrumb: "亞洲 > 日本 > 京都",
+                date: "發布日期：2026-09-28",
+                image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1200&q=80",
+                prev: "article-bangkok",
+                next: "article-shibuya"
+            },
+            'article-bangkok': {
+                title: "【曼谷】舊城區運河快艇與嵩越路 (Song Wat) 獨立咖啡筆記",
+                country: "泰國",
+                breadcrumb: "亞洲 > 泰國 > 曼谷",
+                date: "發布日期：2026-08-12",
+                image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1200&q=80",
+                prev: "article-iceland",
+                next: "article-kyoto"
+            },
+            'article-iceland': {
+                title: "【冰島】一號環島公路：黑沙灘 (Reynisfjara) 風浪注意事項與自駕日誌",
+                country: "冰島",
+                breadcrumb: "歐洲 > 冰島 > 雷克雅維克",
+                date: "發布日期：2026-05-19",
+                image: "https://images.unsplash.com/photo-1504893524553-b855bce32c67?auto=format&fit=crop&w=1200&q=80",
+                prev: "article-shibuya",
+                next: "article-bangkok"
+            }
+        };
+
+        // Navigation Controller: Switch between Catalog View & Article View
+        function openArticle(articleId) {
+            const article = articlesData[articleId];
+            if (!article) return;
+
+            // Populate Article View Data
+            document.getElementById('articleMainTitle').innerText = article.title;
+            document.getElementById('articleCategoryBreadcrumb').innerText = article.breadcrumb;
+            document.getElementById('articleCountryTag').innerText = article.country;
+            document.getElementById('articleDate').innerText = article.date;
+            document.getElementById('articleImage').src = article.image;
+
+            // Toggle Visibility
+            document.getElementById('catalogView').classList.add('hidden');
+            document.getElementById('articleView').classList.remove('hidden');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showCatalog() {
+            document.getElementById('articleView').classList.add('hidden');
+            document.getElementById('catalogView').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function navigateTo(target) {
+            if (target === 'home') {
+                clearSearch();
+                showCatalog();
+            }
+        }
+
+        // Real-Time Search Functionality
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const posts = document.querySelectorAll('.post-card');
+            let visibleCount = 0;
+
+            if (query === '') {
+                document.getElementById('searchStatus').classList.add('hidden');
+                posts.forEach(post => post.classList.remove('hidden'));
+                document.getElementById('articleCount').innerText = `共 ${posts.length} 篇筆記`;
+                document.getElementById('noResults').classList.add('hidden');
+                return;
+            }
+
+            // Show Search Status Badge
+            document.getElementById('searchStatus').classList.remove('hidden');
+            document.getElementById('searchKeyword').innerText = query;
+
+            posts.forEach(post => {
+                const title = post.getAttribute('data-title').toLowerCase();
+                const continent = post.getAttribute('data-continent').toLowerCase();
+                const country = post.getAttribute('data-country').toLowerCase();
+                const city = post.getAttribute('data-city').toLowerCase();
+                const tags = post.getAttribute('data-tags').toLowerCase();
+
+                if (title.includes(query) || continent.includes(query) || country.includes(query) || city.includes(query) || tags.includes(query)) {
+                    post.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    post.classList.add('hidden');
+                }
+            });
+
+            document.getElementById('articleCount').innerText = `找到 ${visibleCount} 篇相關筆記`;
+            
+            if (visibleCount === 0) {
+                document.getElementById('noResults').classList.remove('hidden');
+            } else {
+                document.getElementById('noResults').classList.add('hidden');
+            }
+
+            showCatalog();
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            handleSearch();
+        }
+
+        // Geographic Tree Filter
+        function filterByGeo(region) {
+            if (region === 'all') {
+                clearSearch();
+                return;
+            }
+            document.getElementById('searchInput').value = region;
+            handleSearch();
+        }
+
+        // Modal Controller
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // Mobile Navigation Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Smooth Back to Top
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
